@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  db_mysql:
+    container_name: authmysql
+    image: mysql:5.7-oracle
+    volumes:
+      - test-data:/var/lib/mysql
+      - ./database:/tmp/database
+    command: mysqld --init-file="/tmp/database/schema.sql"
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: db_mysql
+    ports:
+      - 3306:3306  
+    networks:
+      - auth-networks
+
+  authapp:
+    depends_on:
+      - db_mysql
+    container_name: authapp
+    image: node:latest
+    command: sh -c "npm install && npm start"
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    working_dir: /app
+    volumes:
+      - ./:/app
+    networks:
+      - auth-networks
+       
+volumes:
+  test-data:
+
+networks:
+  auth-networks:

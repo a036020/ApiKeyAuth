@@ -1,0 +1,110 @@
+paths:
+  /users/:
+    get:                 
+      tags:               
+        - User            
+      summary: Access to unsecured resource
+      security: []  # No security
+      produces:
+      - text/plain
+      responses:          
+        200:
+          description: Success Message
+    post: 
+      tags: 
+        - User 
+      summary: Access to unsecured resource
+      operationId: createUser
+      security: [] # No security
+      produces:
+        - text/plain
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          required: true
+      responses:
+        "200":
+          description: Create a User model instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Bad request
+        "404":
+          description: id not found
+      x-swagger-router-controller: User
+  /users/{apiKey}:
+    get:
+      tags:
+      - User
+      summary: Retrieve user
+      parameters:
+      - name: apiKey
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        examples:
+          one:
+            summary: Retrieve User key 1
+            value: 1
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: Bad request
+        "404":
+          description: id not found
+    put:
+      tags:
+      - User/{apiKey}
+      summary: Update user
+      operationId: updateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                description: User PUT success
+        "400":
+          description: Bad request
+        "404":
+          description: id not found
+components:
+  schemas:
+    User:
+      title: User
+      required:
+      - apiKey
+      type: object
+      properties:
+        apiKey:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      additionalProperties: false
